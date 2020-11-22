@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".RegisterActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+
+            android:padding="10dp">
+
+            <ImageView
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:src="@drawable/logo" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:text="Register"
+                android:textColor="@color/black"
+                android:textSize="34sp"
+                android:textStyle="bold" />
+
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/reg_first_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_marginTop="10dp"
+                android:drawableLeft="@drawable/ic_action_profie"
+                android:drawablePadding="10dp"
+                android:drawableTint="@color/brown"
+                android:hint="Enter First Name"
+                android:inputType="text"
+                android:maxLines="1"
+                android:textColor="@color/brown"
+                android:textColorHint="@color/brown"
+                android:textSize="16sp"
+                app:met_baseColor="@color/brown"
+                app:met_floatingLabel="highlight"
+                app:met_floatingLabelAlwaysShown="true"
+                app:met_floatingLabelText="First Name"
+                app:met_primaryColor="@color/brown"
+                app:met_singleLineEllipsis="true"
+                app:met_textColorHint="@color/brown" />
+
+
+
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/reg_lastname"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+
+                android:layout_marginTop="10dp"
+                android:drawableLeft="@drawable/ic_action_profie"
+                android:drawablePadding="10dp"
+                android:drawableTint="@color/brown"
+                android:hint="Enter Last Name"
+
+                android:inputType="text"
+                android:maxLines="1"
+                android:textColor="@color/brown"
+                android:textColorHint="@color/brown"
+                android:textSize="16sp"
+                app:met_baseColor="@color/brown"
+                app:met_floatingLabel="highlight"
+                app:met_floatingLabelAlwaysShown="true"
+
+                app:met_floatingLabelText="Last Name"
+                app:met_primaryColor="@color/brown"
+                app:met_singleLineEllipsis="true"
+                app:met_textColorHint="@color/brown" />
+
+
+            <com.rengwuxian.materialedittext.MaterialEditText
+
+
+                android:id="@+id/reg_email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_marginTop="10dp"
+                android:drawableLeft="@drawable/ic_action_email"
+                android:drawablePadding="10dp"
+                android:drawableTint="@color/brown"
+                android:hint="Enter Email"
+                android:inputType="textEmailAddress"
+                android:maxLines="1"
+                android:textColor="@color/brown"
+                android:textColorHint="@color/brown"
+                android:textSize="16sp"
+                app:met_baseColor="@color/brown"
+                app:met_floatingLabel="highlight"
+                app:met_floatingLabelAlwaysShown="true"
+                app:met_floatingLabelText="Email"
+                app:met_primaryColor="@color/brown"
+                app:met_singleLineEllipsis="true"
+                app:met_textColorHint="@color/brown" />
+
+
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/reg_contact"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_marginTop="10dp"
+                android:drawableLeft="@drawable/ic_action_phone"
+                android:drawablePadding="10dp"
+                android:drawableTint="@color/brown"
+                android:hint="Contact Number"
+                android:inputType="phone"
+                android:maxLines="1"
+                android:textColor="@color/brown"
+                android:textColorHint="@color/brown"
+                android:textSize="16sp"
+                app:met_baseColor="@color/brown"
+                app:met_floatingLabel="highlight"
+                app:met_floatingLabelAlwaysShown="true"
+                app:met_floatingLabelText="Contact"
+                app:met_primaryColor="@color/brown"
+                app:met_singleLineEllipsis="true"
+                app:met_textColorHint="@color/brown" />
+
+
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/reg_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_marginTop="10dp"
+                android:drawableLeft="@drawable/ic_action_address"
+                android:drawablePadding="10dp"
+                android:drawableTint="@color/brown"
+                android:hint="Enter Address"
+                android:inputType="text"
+                android:maxLines="1"
+                android:textColor="@color/brown"
+                android:textColorHint="@color/brown"
+                android:textSize="16sp"
+                app:met_baseColor="@color/brown"
+                app:met_floatingLabel="highlight"
+                app:met_floatingLabelAlwaysShown="true"
+                app:met_floatingLabelText="Address"
+                app:met_primaryColor="@color/brown"
+                app:met_singleLineEllipsis="true"
+                app:met_textColorHint="@color/brown" />
+
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/reg_age"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_marginTop="10dp"
+                android:drawableLeft="@drawable/ic_action_profie"
+                android:drawablePadding="10dp"
+                android:drawableTint="@color/brown"
+                android:hint="Enter Age"
+                android:inputType="numberDecimal"
+                android:maxLines="1"
+                android:textColor="@color/brown"
+                android:textColorHint="@color/brown"
+                android:textSize="16sp"
+                app:met_baseColor="@color/brown"
+                app:met_floatingLabel="highlight"
+                app:met_floatingLabelAlwaysShown="true"
+                app:met_floatingLabelText="Age"
+                app:met_primaryColor="@color/brown"
+                app:met_singleLineEllipsis="true"
+                app:met_textColorHint="@color/brown" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:text="City"
+                android:textColor="@color/brown" />
+
+            <Spinner
+                android:id="@+id/reg_city"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"
+                android:text="Purpose"
+                android:textColor="@color/brown" />
+
+            <Spinner
+                android:id="@+id/reg_purpose"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="10dp"
+                android:text="Gender"
+                android:textColor="@color/brown" />
+
+            <Spinner
+                android:id="@+id/reg_gender"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp" />
+
+
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/reg_passwrod"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_marginTop="10dp"
+                android:drawableLeft="@drawable/ic_action_password"
+                android:drawablePadding="10dp"
+                android:drawableTint="@color/brown"
+                android:hint="Enter Password"
+                android:inputType="textPassword"
+                android:maxLines="1"
+                android:password="true"
+                android:textColor="@color/brown"
+                android:textColorHint="@color/brown"
+                android:textSize="16sp"
+                app:met_baseColor="@color/brown"
+                app:met_floatingLabel="highlight"
+                app:met_floatingLabelAlwaysShown="true"
+                app:met_floatingLabelText="Password"
+                app:met_primaryColor="@color/brown"
+                app:met_singleLineEllipsis="true"
+                app:met_textColorHint="@color/brown" />
+
+
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/reg_confirm_pass"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_marginTop="10dp"
+                android:drawableLeft="@drawable/ic_action_password"
+                android:drawablePadding="10dp"
+                android:drawableTint="@color/brown"
+                android:hint="Enter Confirm Password"
+                android:inputType="textPassword"
+                android:maxLines="1"
+                android:password="true"
+                android:textColor="@color/brown"
+                android:textColorHint="@color/brown"
+                android:textSize="16sp"
+                app:met_baseColor="@color/brown"
+                app:met_floatingLabel="highlight"
+                app:met_floatingLabelAlwaysShown="true"
+                app:met_floatingLabelText="Confirm Password"
+                app:met_primaryColor="@color/brown"
+                app:met_singleLineEllipsis="true"
+                app:met_textColorHint="@color/brown" />
+
+            <Button
+                android:id="@+id/reg_reg_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                android:background="@color/brown"
+                android:padding="10dp"
+                android:text="Register"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="16sp" />
+
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

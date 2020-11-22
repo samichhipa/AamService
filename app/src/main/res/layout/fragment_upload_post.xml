@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.UploadPost.UploadPostFragment">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:padding="10dp"
+        android:text="Upload New Post"
+        android:textColor="@color/brown"
+        android:textSize="28sp"
+        android:textStyle="bold" />
+
+    <ScrollView
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:orientation="vertical">
+
+
+            <ImageView
+                android:id="@+id/add_post_image"
+                android:layout_width="wrap_content"
+                android:layout_height="120dp"
+                android:layout_gravity="center"
+                android:layout_margin="10dp"
+                android:src="@drawable/picture"
+                app:tint="@android:color/darker_gray" />
+
+
+            <Spinner
+                android:id="@+id/add_post_category"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="@drawable/edittext_bg" />
+
+            <EditText
+                android:id="@+id/add_post_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="@drawable/edittext_bg"
+                android:hint="Title"
+                android:inputType="text"
+                android:textColor="@color/brown"
+                android:textColorHint="@color/brown" />
+
+            <EditText
+                android:id="@+id/add_post_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="10dp"
+                android:background="@drawable/edittext_bg"
+                android:gravity="start"
+                android:hint="Description"
+                android:inputType="text"
+                android:minHeight="150dp"
+                android:textColor="@color/brown"
+                android:textColorHint="@color/brown" />
+
+            <EditText
+                android:id="@+id/add_post_amount"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="@drawable/edittext_bg"
+                android:hint="Amount"
+                android:inputType="numberDecimal"
+                android:textColor="@color/brown"
+                android:textColorHint="@color/brown" />
+
+            <EditText
+                android:id="@+id/add_post_msg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="10dp"
+                android:background="@drawable/edittext_bg"
+                android:gravity="start"
+                android:hint="Message"
+                android:inputType="text"
+                android:minHeight="100dp"
+                android:textColor="@color/brown"
+                android:textColorHint="@color/brown" />
+
+            <EditText
+                android:id="@+id/add_post_contact"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="@drawable/edittext_bg"
+                android:hint="Contact"
+                android:inputType="phone"
+                android:textColor="@color/brown"
+                android:textColorHint="@color/brown" />
+
+            <EditText
+                android:id="@+id/add_post_location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="@drawable/edittext_bg"
+                android:hint="Location"
+                android:inputType="text"
+                android:textColor="@color/brown"
+                android:textColorHint="@color/brown" />
+
+            <TextView
+                android:id="@+id/add_post_start_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="@drawable/edittext_bg"
+                android:hint="Start Time"
+                android:textColor="@color/brown"
+                android:textColorHint="@color/brown" />
+
+            <TextView
+                android:id="@+id/add_post_end_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="@drawable/edittext_bg"
+                android:hint="End Time"
+                android:textColor="@color/brown"
+                android:textColorHint="@color/brown" />
+
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="@color/brown"
+                android:padding="10dp"
+                android:id="@+id/add_post_post_Btn"
+                android:text="Post"
+                android:layout_marginBottom="20dp"
+                android:textColor="@color/white" />
+
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
