@@ -6,13 +6,19 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.FileUtils;
+import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -59,6 +65,7 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
@@ -93,11 +100,20 @@ public class UploadPostFragment extends Fragment {
 
     ApiInterface mService;
     String str_uri;
+    Bitmap bitmap = null;
+
+    ProgressDialog progressDialog;
+    SharedPreferences preferences;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
         View root = inflater.inflate(R.layout.fragment_upload_post, container, false);
+
+        progressDialog=new ProgressDialog(getActivity());
+        progressDialog.setMessage("Please Wait...");
+        progressDialog.setCancelable(false);
+        preferences=getActivity().getSharedPreferences("PREF", Context.MODE_PRIVATE);
 
         mService = Constants.GetAPI();
         add_post_image = root.findViewById(R.id.add_post_image);
@@ -139,14 +155,6 @@ public class UploadPostFragment extends Fragment {
             public void onClick(View view) {
 
                 CropImage.activity().setGuidelines(CropImageView.Guidelines.ON).start(UploadPostFragment.this.getContext(), UploadPostFragment.this);
-/*
-
-                Intent intent = new Intent();
-                intent.setType("image/*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(intent, "Select Picture"), 100);
-
- */
 
             }
         });
@@ -206,10 +214,56 @@ public class UploadPostFragment extends Fragment {
 
                     Toast.makeText(getActivity(), "Select End Time", Toast.LENGTH_SHORT).show();
 
-                } else if (image_uri == null) {
+                } else if (image_uri == null && bitmap==null) {
                     Toast.makeText(getActivity(), "Please Select Image", Toast.LENGTH_SHORT).show();
                 } else {
-                    new UploadFileToServer().execute();
+
+                    progressDialog.show();
+                    mService.SaveImage(add_post_title.getText().toString(),add_post_amount.getText().toString(),imagetostr(bitmap),add_post_description.getText().toString()
+                            ,selectedCategory ,add_post_location.getText().toString(),start_date,end_date,add_post_contact.getText().toString(),preferences.getString("id","")).enqueue(new Callback<ResponseBody>() {
+                        @Override
+                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                            if (response.isSuccessful()){
+
+                                progressDialog.dismiss();
+                                str="";
+
+                                try {
+                                    str=((ResponseBody)response.body()).string();
+                                    JSONObject jsonObject=new JSONObject(str);
+                                    Log.d("TAG",jsonObject.toString());
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }else{
+
+                                progressDialog.dismiss();
+
+                                str="";
+
+                                try {
+                                    str=((ResponseBody)response.errorBody()).string();
+                                    JSONObject jsonObject=new JSONObject(str);
+                                    Log.d("TAG",jsonObject.toString());
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                            progressDialog.dismiss();
+                            Log.d("TAG",t.getMessage());
+                        }
+                    });
+
                     //String file=FilePath.getPath(getActivity(),image_uri);
 
                     /*
@@ -256,6 +310,40 @@ public class UploadPostFragment extends Fragment {
         return root;
     }
 
+    private String imagetostr(Bitmap bitmap) {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+
+        bitmap.compress(Bitmap.CompressFormat.PNG, 50, byteArrayOutputStream);
+        byte[] imgBytes = byteArrayOutputStream.toByteArray();
+        return Base64.encodeToString(imgBytes, Base64.DEFAULT);
+
+    }
+
+    private void selectImage() {
+        final CharSequence[] items = {"Take Photo", "Choose from Library", "Cancel"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Add Photo!");
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                if (items[item].equals("Take Photo")) {
+                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    startActivityForResult(intent, 1);
+                } else if (items[item].equals("Choose from Library")) {
+                    Intent intent = new Intent(
+                            Intent.ACTION_PICK,
+                            MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    intent.setType("image/*");
+                    startActivityForResult(
+                            Intent.createChooser(intent, "Select File"),
+                            2);
+                } else if (items[item].equals("Cancel")) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        builder.show();
+    }
     private class UploadFileToServer extends AsyncTask<String, String, String> {
         @Override
         protected String doInBackground(String... strings) {
@@ -535,13 +623,15 @@ public class UploadPostFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
+
         if (requestCode == 203) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == -1) {
                 image_uri = result.getUri();
-                //add_post_image.setImageURI(image_uri);
-                str_uri = FilePath.getPath(getActivity(), image_uri);
 
+// by this point we have the camera photo on disk
+                bitmap= BitmapFactory.decodeFile(image_uri.getPath());
+                add_post_image.setImageBitmap(bitmap);
                 //Glide.with(getContext()).load(this.imageUri).into(this.item_image);
             } else if (resultCode == 204) {
                 Toast.makeText(getContext(), result.getError().getMessage(), Toast.LENGTH_SHORT).show();

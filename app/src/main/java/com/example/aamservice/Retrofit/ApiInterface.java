@@ -28,14 +28,11 @@ public interface ApiInterface {
 
     @FormUrlEncoded
     @POST("ad_post.php")
-    @Multipart
-    Call<ResponseBody> SaveImage(@Part("title") String title, @Part("amount") String amount, @Part MultipartBody.Part img_file,@Part("description") String description, @Part("message") String message,@Part("location") String location, @Part("start_time") String start_time,@Part("end_time") String end_time,@Part("category") String category);
+    Call<ResponseBody> SaveImage(@Field("title") String title, @Field("amount") String amount, @Field("image") String image,@Field("description") String description,@Field("category") String category,@Field("location") String location, @Field("start_time") String start_time,@Field("end_time") String end_time
+    ,@Field("contact") String contact,@Field("owner_id") String owner_id);
 
-   // @POST("upload_image.php")
-   // Call<ResponseBody> SaveImage(@Body RequestBody requestBody);
-
-
-
+    @GET("show_all_post.php")
+    Call<ResponseBody> ShowAllPosts(@Query("category") String category);
 
 
 

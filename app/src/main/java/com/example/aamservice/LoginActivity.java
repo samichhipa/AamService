@@ -139,6 +139,21 @@ public class LoginActivity extends AppCompatActivity {
                                                str = ((ResponseBody) response.body()).string();
                                                JSONObject jSONObject = new JSONObject(str);
 
+                                               SharedPreferences.Editor editor=getSharedPreferences("PREF",MODE_PRIVATE).edit();
+                                               editor.putString("id",jSONObject.getString("id"));
+                                               editor.putString("fname",jSONObject.getString("fname"));
+                                               editor.putString("lname",jSONObject.getString("lname"));
+                                               editor.putString("email",jSONObject.getString("email"));
+                                               editor.putString("contact",jSONObject.getString("contact"));
+                                               editor.putString("address",jSONObject.getString("address"));
+                                               editor.putString("city",jSONObject.getString("city"));
+                                               editor.putString("age",jSONObject.getString("age"));
+                                               editor.putString("gender",jSONObject.getString("gender"));
+                                               editor.putString("purpose",jSONObject.getString("purpose"));
+                                               editor.commit();
+
+                                               startActivity(new Intent(LoginActivity.this, HomeActivity.class));
+                                               finish();
 
 
                                            } catch (IOException e) {
