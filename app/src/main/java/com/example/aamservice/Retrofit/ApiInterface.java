@@ -34,6 +34,9 @@ public interface ApiInterface {
     @GET("show_all_post.php")
     Call<ResponseBody> ShowAllPosts(@Query("category") String category);
 
+    @GET("show_post.php")
+    Call<ResponseBody> ShowPosts(@Query("category") String category,@Query("id") String id);
+
 
 
 }

@@ -536,20 +536,15 @@ public class UploadPostFragment extends Fragment {
                                     } catch (ParseException e) {
                                         e.printStackTrace();
                                     }
-
-
                                 }
                             }
                         }, mHour, mMinute, false);
                 timePickerDialog.show();
-
             }
         }, c_year, c_month, c_day);
 
-
         datePickerDialog.show();
         //Disabled Previous Date//
-
 
         datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
 

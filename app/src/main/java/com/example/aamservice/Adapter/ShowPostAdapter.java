@@ -1,6 +1,7 @@
 package com.example.aamservice.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.aamservice.PostDetails;
 import com.example.aamservice.R;
 
 import org.json.JSONArray;
@@ -38,7 +40,7 @@ public class ShowPostAdapter extends RecyclerView.Adapter<ShowPostAdapter.ViewHo
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
         try {
-            JSONObject object=jsonArray.getJSONObject(position);
+             final JSONObject object=jsonArray.getJSONObject(position);
 
             holder.txt_post_title.setText(object.getString("title"));
             holder.txt_post_amount.setText("Rs. "+object.getString("amount"));
@@ -48,6 +50,22 @@ public class ShowPostAdapter extends RecyclerView.Adapter<ShowPostAdapter.ViewHo
             e.printStackTrace();
         }
 
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+                try {
+                    Intent intent=new Intent(context, PostDetails.class);
+                    intent.putExtra("post_obj",jsonArray.getJSONObject(position).toString());
+                    context.startActivity(intent);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
 
     }
 
