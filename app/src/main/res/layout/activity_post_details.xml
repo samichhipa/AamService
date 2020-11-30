@@ -25,6 +25,7 @@
         android:layout_gravity="center"
         android:layout_width="30dp"
         android:layout_height="30dp"
+        android:paddingLeft="10dp"
         android:src="@drawable/ic_action_back"
         app:tint="@color/brown" />
 
@@ -49,6 +50,7 @@
 </LinearLayout>
 
         <ImageView
+            android:layout_marginTop="10dp"
             android:id="@+id/post_detail_img"
             android:layout_width="match_parent"
             android:layout_height="200dp"
@@ -259,6 +261,51 @@
                     android:layout_weight="1"/>
 
             </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:orientation="horizontal">
+            <CheckBox
+                android:drawableTint="@color/brown"
+                android:backgroundTint="@color/brown"
+                android:textColorLink="@color/brown"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:textSize="18sp"
+                android:textColor="@color/brown"
+                android:id="@+id/checkbox_policy"
+              />
+                <TextView
+                    android:id="@+id/txt_show_post"
+                    android:textColor="@color/brown"
+                    android:textStyle="bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Accept this Policy"
+                    android:layout_gravity="center"
+                    android:gravity="center"/>
+            </LinearLayout>
+            <Button
+
+                android:id="@+id/confirm_policy_btn"
+                android:layout_margin="20dp"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:background="@color/brown"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:textSize="18sp"
+                android:text="Confirm "/>
+
 
         </LinearLayout>
 

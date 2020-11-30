@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_margin="10dp"
+    tools:context=".ui.UploadPost.PolicyFragment">
+
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/brown"
+        android:textSize="28sp"
+        android:text="Policy"/>
+
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/policy_gurantee"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_marginTop="10dp"
+        android:drawableLeft="@drawable/ic_action_profie"
+        android:drawablePadding="10dp"
+        android:drawableTint="@color/brown"
+        android:hint="Gurantee"
+        android:inputType="text"
+        android:maxLines="1"
+        android:textColor="@color/brown"
+        android:textColorHint="@color/brown"
+        android:textSize="16sp"
+        app:met_baseColor="@color/brown"
+        app:met_floatingLabel="highlight"
+        app:met_floatingLabelAlwaysShown="true"
+        app:met_floatingLabelText="Gurantee"
+        app:met_primaryColor="@color/brown"
+        app:met_singleLineEllipsis="true"
+        app:met_textColorHint="@color/brown" />
+
+
+    <com.rengwuxian.materialedittext.MaterialEditText
+        android:id="@+id/policy_gurantee_amount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_marginTop="10dp"
+        android:drawableLeft="@drawable/ic_action_profie"
+        android:drawablePadding="10dp"
+        android:drawableTint="@color/brown"
+        android:hint="Gurantee Amount"
+        android:inputType="numberDecimal"
+        android:maxLines="1"
+        android:textColor="@color/brown"
+        android:textColorHint="@color/brown"
+        android:textSize="16sp"
+        app:met_baseColor="@color/brown"
+        app:met_floatingLabel="highlight"
+        app:met_floatingLabelAlwaysShown="true"
+        app:met_floatingLabelText="Gurantee Amount"
+        app:met_primaryColor="@color/brown"
+        app:met_singleLineEllipsis="true"
+        app:met_textColorHint="@color/brown" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:text="Duration"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:id="@+id/policy_duration"
+        android:text="Duration"/>
+
+
+    <Button
+        android:id="@+id/submit_policy_btn"
+        android:textAllCaps="false"
+        android:layout_margin="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:textColor="@color/white"
+        android:background="@color/brown"
+        android:text="Submit Policy"/>
+
+</LinearLayout>

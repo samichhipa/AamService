@@ -60,6 +60,9 @@ public class RegisterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        progressDialog=new ProgressDialog(RegisterActivity.this);
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage("Please Wait...");
         init();
         mService = Constants.GetAPI();
 
@@ -131,7 +134,9 @@ public class RegisterActivity extends AppCompatActivity {
                 } else if (TextUtils.isEmpty(txt_contact.getText().toString())) {
 
                     Toast.makeText(RegisterActivity.this, "Enter Contact No", Toast.LENGTH_SHORT).show();
-                } else if (TextUtils.isEmpty(txt_pass.getText().toString())) {
+                }else if (!txt_contact.getText().toString().substring(0,2).equals("92")){
+                    Toast.makeText(RegisterActivity.this, "Enter Phone Number like 92XXXXXXXX", Toast.LENGTH_SHORT).show();
+                }else if (TextUtils.isEmpty(txt_pass.getText().toString())) {
                     Toast.makeText(RegisterActivity.this, "Enter Password", Toast.LENGTH_SHORT).show();
                 } else if (TextUtils.isEmpty(txt_conf_pass.getText().toString())) {
                     Toast.makeText(RegisterActivity.this, "Enter Confirm Password", Toast.LENGTH_SHORT).show();
@@ -146,41 +151,82 @@ public class RegisterActivity extends AppCompatActivity {
                     Toast.makeText(RegisterActivity.this, "Enter Age", Toast.LENGTH_SHORT).show();
                 } else {
 
-                  //  new AttemptSignUp().execute();
+                    if(Constants.isNetworkAvailable(RegisterActivity.this)) {
+                        progressDialog.show();
+                        mService.SignUp(txt_first_name.getText().toString(), txt_last_name.getText().toString(), txt_email.getText().toString(), txt_pass.getText().toString()
+                                , txt_conf_pass.getText().toString(), txt_contact.getText().toString(), txt_address.getText().toString(),
+                                selectedCity, txt_age.getText().toString(), selectedGender, selectedPurpose).enqueue(new Callback<ResponseBody>() {
+                            @Override
+                            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                                if (response.isSuccessful()) {
 
-                    mService.SignUp(txt_first_name.getText().toString(),txt_last_name.getText().toString(),txt_email.getText().toString(), txt_pass.getText().toString()
-                            , txt_conf_pass.getText().toString(), txt_contact.getText().toString(), txt_address.getText().toString(),
-                            selectedCity, txt_age.getText().toString(), selectedGender, selectedPurpose).enqueue(new Callback<ResponseBody>() {
-                        @Override
-                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                            if (response.isSuccessful()) {
+                                    progressDialog.dismiss();
+                                    str = "";
+                                    try {
+                                        str = response.body().string();
+                                        JSONObject object = new JSONObject(str);
 
-                                str = "";
-                                try {
-                                    str = response.body().string();
-                                    JSONObject object = new JSONObject(str);
+                                        if (object.getString("status").equals("Successful")){
+                                            Toast.makeText(RegisterActivity.this, "" + object.getString("message"), Toast.LENGTH_SHORT).show();
 
-                                    Toast.makeText(RegisterActivity.this, ""+object.getString("status"), Toast.LENGTH_SHORT).show();
+                                            txt_contact.setText("");
+                                            txt_address.setText("");
+                                            txt_age.setText("");
+                                            txt_conf_pass.setText("");
+                                            txt_email.setText("");
+                                            txt_first_name.setText("");
+                                            txt_last_name.setText("");
+                                            txt_pass.setText("");
+
+                                        }else{
+
+                                            Toast.makeText(RegisterActivity.this, "" + object.getString("message"), Toast.LENGTH_SHORT).show();
+
+
+                                        }
 
 
 
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+
+
+                                } else {
+
+                                    progressDialog.dismiss();
+                                    str = "";
+                                    try {
+                                        str = response.errorBody().string();
+                                        JSONObject object = new JSONObject(str);
+
+                                        Toast.makeText(RegisterActivity.this, "" + object.getString("message"), Toast.LENGTH_SHORT).show();
+
+
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+
+
                                 }
+                            }
 
+                            @Override
+                            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                                progressDialog.dismiss();
+                                Toast.makeText(RegisterActivity.this, "" +t.getMessage(), Toast.LENGTH_SHORT).show();
 
                             }
-                        }
+                        });
+                    }else{
 
-                        @Override
-                        public void onFailure(Call<ResponseBody> call, Throwable t) {
-
-                            Log.d(TAG_MESSAGE,t.getMessage());
-                        }
-                    });
-
+                        Toast.makeText(RegisterActivity.this, "No Internet Connection", Toast.LENGTH_SHORT).show();
+                    }
 
 
                 }

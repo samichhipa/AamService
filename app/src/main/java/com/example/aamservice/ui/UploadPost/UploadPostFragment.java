@@ -37,6 +37,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -48,6 +49,7 @@ import com.example.aamservice.Retrofit.FilePath;
 import com.example.aamservice.Retrofit.ProgressRequestBody;
 import com.example.aamservice.Retrofit.UploadCallback;
 import com.example.aamservice.services.AndroidMultiPartEntity;
+import com.squareup.picasso.Picasso;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
@@ -110,10 +112,10 @@ public class UploadPostFragment extends Fragment {
 
         View root = inflater.inflate(R.layout.fragment_upload_post, container, false);
 
-        progressDialog=new ProgressDialog(getActivity());
+        progressDialog = new ProgressDialog(getActivity());
         progressDialog.setMessage("Please Wait...");
         progressDialog.setCancelable(false);
-        preferences=getActivity().getSharedPreferences("PREF", Context.MODE_PRIVATE);
+        preferences = getActivity().getSharedPreferences("PREF", Context.MODE_PRIVATE);
 
         mService = Constants.GetAPI();
         add_post_image = root.findViewById(R.id.add_post_image);
@@ -175,6 +177,8 @@ public class UploadPostFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 Select_Start_DateDialog();
+
+
             }
         });
 
@@ -214,100 +218,100 @@ public class UploadPostFragment extends Fragment {
 
                     Toast.makeText(getActivity(), "Select End Time", Toast.LENGTH_SHORT).show();
 
-                } else if (image_uri == null && bitmap==null) {
+                } else if (image_uri == null && bitmap == null) {
                     Toast.makeText(getActivity(), "Please Select Image", Toast.LENGTH_SHORT).show();
+                } else if (preferences.getString("purpose", "").equals("tenant")) {
+                    Toast.makeText(getActivity(), "Only Owner Can Upload Post...", Toast.LENGTH_SHORT).show();
+
                 } else {
 
-                    progressDialog.show();
-                    mService.SaveImage(add_post_title.getText().toString(),add_post_amount.getText().toString(),imagetostr(bitmap),add_post_description.getText().toString()
-                            ,selectedCategory ,add_post_location.getText().toString(),start_date,end_date,add_post_contact.getText().toString(),preferences.getString("id","")).enqueue(new Callback<ResponseBody>() {
-                        @Override
-                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                            if (response.isSuccessful()){
+                    if (Constants.isNetworkAvailable(getActivity())) {
+
+                        progressDialog.show();
+                        mService.AddPost(add_post_title.getText().toString(), add_post_amount.getText().toString(), imagetostr(bitmap), add_post_description.getText().toString()
+                                , selectedCategory, add_post_location.getText().toString(), start_date, end_date, add_post_contact.getText().toString(), preferences.getString("id", "")).enqueue(new Callback<ResponseBody>() {
+                            @Override
+                            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                                if (response.isSuccessful()) {
+
+                                    progressDialog.dismiss();
+                                    str = "";
+
+                                    try {
+                                        str = ((ResponseBody) response.body()).string();
+                                        JSONObject jsonObject = new JSONObject(str);
+                                        if (jsonObject.getString("status").equals("Successful")) {
+
+                                            Toast.makeText(getActivity(), ""+jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
+
+
+                                            Bundle bundle = new Bundle();
+                                            bundle.putString("post_id", jsonObject.getString("post_id"));
+                                            bundle.putString("ad_name", add_post_title.getText().toString());
+                                            bundle.putString("ad_amount", add_post_amount.getText().toString());
+                                            bundle.putString("duration", start_date + " - " + end_date);
+                                            bundle.putString("location", add_post_location.getText().toString());
+                                            setArguments(bundle);
+                                            setFragment(new PolicyFragment());
+
+                                        }else{
+
+                                            Toast.makeText(getActivity(), ""+jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
+
+                                        }
+                                        Log.d("TAG", jsonObject.toString());
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                } else {
+
+                                    progressDialog.dismiss();
+
+                                    str = "";
+
+                                    try {
+                                        str = ((ResponseBody) response.errorBody()).string();
+                                        JSONObject jsonObject = new JSONObject(str);
+                                        Log.d("TAG", jsonObject.toString());
+
+                                        Toast.makeText(getActivity(), ""+jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<ResponseBody> call, Throwable t) {
 
                                 progressDialog.dismiss();
-                                str="";
-
-                                try {
-                                    str=((ResponseBody)response.body()).string();
-                                    JSONObject jsonObject=new JSONObject(str);
-                                    Log.d("TAG",jsonObject.toString());
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                            }else{
-
-                                progressDialog.dismiss();
-
-                                str="";
-
-                                try {
-                                    str=((ResponseBody)response.errorBody()).string();
-                                    JSONObject jsonObject=new JSONObject(str);
-                                    Log.d("TAG",jsonObject.toString());
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-
+                                Toast.makeText(getActivity(), ""+t.getMessage(), Toast.LENGTH_SHORT).show();
                             }
-                        }
+                        });
 
-                        @Override
-                        public void onFailure(Call<ResponseBody> call, Throwable t) {
-
-                            progressDialog.dismiss();
-                            Log.d("TAG",t.getMessage());
-                        }
-                    });
-
-                    //String file=FilePath.getPath(getActivity(),image_uri);
-
-                    /*
-                    File file = new File(image_uri.getPath());
-
-
-                    RequestBody create = RequestBody.create(MediaType.parse("image/*"), file);
-
-                    MultipartBody.Part body = MultipartBody.Part.createFormData("image", file.getName(), create);
-
-                    mService.SaveImage(add_post_title.getText().toString(),add_post_amount.getText().toString(),body,add_post_description.getText().toString()
-                    ,add_post_msg.getText().toString(),add_post_location.getText().toString(),start_date,end_date,selectedCategory).enqueue(new Callback<ResponseBody>() {
-                        @Override
-                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-
-                            if (response.isSuccessful()){
-
-                                try {
-                                    str=response.body().string();
-                                    JSONObject jsonObject=new JSONObject(str);
-                                    Log.d(str,jsonObject.toString());
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                            }else{
-
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<ResponseBody> call, Throwable t) {
-
-                        }
-                    });
-
-                     */
+                    }else{
+                        Toast.makeText(getActivity(), "No Internet Connection", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });
 
 
         return root;
+    }
+
+    public void setFragment(Fragment fragment) {
+
+
+        FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.main_fragment, fragment);
+        fragmentTransaction.commit();
+
     }
 
     private String imagetostr(Bitmap bitmap) {
@@ -319,177 +323,9 @@ public class UploadPostFragment extends Fragment {
 
     }
 
-    private void selectImage() {
-        final CharSequence[] items = {"Take Photo", "Choose from Library", "Cancel"};
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Add Photo!");
-        builder.setItems(items, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int item) {
-                if (items[item].equals("Take Photo")) {
-                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    startActivityForResult(intent, 1);
-                } else if (items[item].equals("Choose from Library")) {
-                    Intent intent = new Intent(
-                            Intent.ACTION_PICK,
-                            MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    intent.setType("image/*");
-                    startActivityForResult(
-                            Intent.createChooser(intent, "Select File"),
-                            2);
-                } else if (items[item].equals("Cancel")) {
-                    dialog.dismiss();
-                }
-            }
-        });
-        builder.show();
-    }
-    private class UploadFileToServer extends AsyncTask<String, String, String> {
-        @Override
-        protected String doInBackground(String... strings) {
-            String responseString = null;
-
-            HttpClient httpClient = new DefaultHttpClient();
-//Important for android version 9 pie/
-            httpClient.getConnectionManager().getSchemeRegistry().register(
-                    new Scheme("https", SSLSocketFactory.getSocketFactory(), 443)
-            );
-            HttpClient httpclient = new DefaultHttpClient();
-            HttpPost httppost = new HttpPost("https://scissile-efficiency.000webhostapp.com/ad_post.php");
-
-            try {
-                AndroidMultiPartEntity entity = new AndroidMultiPartEntity(
-                        new AndroidMultiPartEntity.ProgressListener() {
-
-                            @Override
-                            public void transferred(long num) {
-                            }
-                        });
-
-                File sourceFile = new File(str_uri);
 
 
-                // Adding file data to http body
-                entity.addPart("image", new FileBody(sourceFile));
-                entity.addPart("title", new StringBody(add_post_title.getText().toString()));
-                entity.addPart("amount", new StringBody(add_post_amount.getText().toString()));
-                entity.addPart("description", new StringBody(add_post_description.getText().toString()));
-                entity.addPart("message", new StringBody(add_post_msg.getText().toString()));
-                entity.addPart("location", new StringBody(add_post_location.getText().toString()));
-                entity.addPart("category", new StringBody(selectedCategory));
-                entity.addPart("start_time", new StringBody(add_post_start_time.getText().toString()));
-                entity.addPart("end_time", new StringBody(add_post_end_time.getText().toString()));
-                entity.addPart("contact", new StringBody(add_post_contact.getText().toString()));
 
-                httppost.setEntity(entity);
-
-                // Making server call
-                HttpResponse response = httpclient.execute(httppost);
-                HttpEntity r_entity = response.getEntity();
-
-
-                int statusCode = response.getStatusLine().getStatusCode();
-                if (statusCode == 200) {
-
-                    responseString = EntityUtils.toString(r_entity);
-                    // Server response
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(getActivity(), "Post Uploaded", Toast.LENGTH_SHORT).show();
-
-                        }
-                    });
-
-                } else {
-                    responseString = "Error occurred! Http Status Code: "
-                            + statusCode;
-                }
-
-            } catch (ClientProtocolException e) {
-                responseString = e.toString();
-            } catch (IOException e) {
-                responseString = e.toString();
-            }
-
-            return responseString;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            // setting progress bar to zero
-
-            super.onPreExecute();
-
-        }
-
-
-        @SuppressWarnings("deprecation")
-        private String uploadFile() {
-            String responseString = null;
-
-            HttpClient httpclient = new DefaultHttpClient();
-            HttpPost httppost = new HttpPost("https://scissile-efficiency.000webhostapp.com/ad_post.php");
-
-            try {
-                AndroidMultiPartEntity entity = new AndroidMultiPartEntity(
-                        new AndroidMultiPartEntity.ProgressListener() {
-
-                            @Override
-                            public void transferred(long num) {
-                            }
-                        });
-
-                String str_uri = FilePath.getPath(getActivity(), image_uri);
-                File sourceFile = new File(str_uri);
-
-
-                // Adding file data to http body
-                entity.addPart("image", new FileBody(sourceFile));
-                entity.addPart("title", new StringBody(add_post_title.getText().toString()));
-                entity.addPart("amount", new StringBody(add_post_amount.getText().toString()));
-                entity.addPart("description", new StringBody(add_post_description.getText().toString()));
-                entity.addPart("message", new StringBody(add_post_msg.getText().toString()));
-                entity.addPart("location", new StringBody(add_post_location.getText().toString()));
-                entity.addPart("category", new StringBody(selectedCategory));
-                entity.addPart("start_time", new StringBody(add_post_start_time.getText().toString()));
-                entity.addPart("end_time", new StringBody(add_post_end_time.getText().toString()));
-
-                httppost.setEntity(entity);
-
-                // Making server call
-                HttpResponse response = httpclient.execute(httppost);
-                HttpEntity r_entity = response.getEntity();
-
-                int statusCode = response.getStatusLine().getStatusCode();
-                if (statusCode == 200) {
-                    // Server response
-                    Toast.makeText(getActivity(), "Post Uploaded", Toast.LENGTH_SHORT).show();
-
-                } else {
-                    responseString = "Error occurred! Http Status Code: "
-                            + statusCode;
-                }
-
-            } catch (ClientProtocolException e) {
-                responseString = e.toString();
-            } catch (IOException e) {
-                responseString = e.toString();
-            }
-
-            return responseString;
-
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            Log.e("TAG", "Response from server: " + result);
-
-
-            super.onPostExecute(result);
-        }
-
-    }
 
     private void Select_Start_DateDialog() {
 
@@ -611,7 +447,6 @@ public class UploadPostFragment extends Fragment {
         //Disabled Previous Date//
         datePickerDialog.getDatePicker().setMinDate(starttime_long - 1000);
 
-
     }
 
     @Override
@@ -625,8 +460,9 @@ public class UploadPostFragment extends Fragment {
                 image_uri = result.getUri();
 
 // by this point we have the camera photo on disk
-                bitmap= BitmapFactory.decodeFile(image_uri.getPath());
-                add_post_image.setImageBitmap(bitmap);
+                bitmap = BitmapFactory.decodeFile(image_uri.getPath());
+                //add_post_image.setImageBitmap(bitmap);
+                Picasso.get().load(image_uri).into(add_post_image);
                 //Glide.with(getContext()).load(this.imageUri).into(this.item_image);
             } else if (resultCode == 204) {
                 Toast.makeText(getContext(), result.getError().getMessage(), Toast.LENGTH_SHORT).show();

@@ -7,10 +7,13 @@
         android:title="Posts" />
 
     <item
+        android:id="@+id/nav_operator"
+        android:icon="@drawable/operator"
+        android:title="Operator" />
+
+    <item
         android:id="@+id/nav_upload_post"
         android:icon="@drawable/uplaod_post"
         android:title="Upload Post" />
-
-
 
 </menu>

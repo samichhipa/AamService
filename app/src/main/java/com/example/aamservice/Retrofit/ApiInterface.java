@@ -28,15 +28,34 @@ public interface ApiInterface {
 
     @FormUrlEncoded
     @POST("ad_post.php")
-    Call<ResponseBody> SaveImage(@Field("title") String title, @Field("amount") String amount, @Field("image") String image,@Field("description") String description,@Field("category") String category,@Field("location") String location, @Field("start_time") String start_time,@Field("end_time") String end_time
+    Call<ResponseBody> AddPost(@Field("title") String title, @Field("amount") String amount, @Field("image") String image,@Field("description") String description,@Field("category") String category,@Field("location") String location, @Field("start_time") String start_time,@Field("end_time") String end_time
     ,@Field("contact") String contact,@Field("owner_id") String owner_id);
 
     @GET("show_all_post.php")
     Call<ResponseBody> ShowAllPosts(@Query("category") String category);
 
-    @GET("show_post.php")
-    Call<ResponseBody> ShowPosts(@Query("category") String category,@Query("id") String id);
+    @GET("confirm_policy.php")
+    Call<ResponseBody> ConfirmPolicy(@Query("post_id") String post_id,@Query("tenant") String tenant,@Query("tenant_name") String tenant_name,@Query("lend_time") String lend_time,
+                                     @Query("return_time") String return_time,@Query("tenant_confirm") String tenant_confirm);
+
+    @GET("show_policy.php")
+    Call<ResponseBody> ShowPolicy(@Query("post_id") String post_id);
 
 
+    @GET("create_invoice.php")
+    Call<ResponseBody> CreateInvoice(@Query("post_id") String post_id);
 
+    @GET("operator.php")
+    Call<ResponseBody> Operators();
+
+    @GET("invoice.php")
+    Call<ResponseBody> Invoice(@Query("invoice") String invoice,@Query("operator_id") String operator_id,@Query("tenant_id") String tenant_id);
+
+
+    @GET("invoice.php")
+    Call<ResponseBody> InvoiceForTenant(@Query("post_id") String post_id,@Query("invoice") String invoice,@Query("purpose") String purpose);
+
+    @GET("policy.php")
+    Call<ResponseBody> CreatePolicy(@Query("post_id") String post_id,@Query("owner_name") String owner_name,@Query("ad_name") String ad_name,@Query("location") String location
+    ,@Query("ad_amount") String ad_amount,@Query("duration") String duration,@Query("guarantee") String guarantee,@Query("guarantee_amount") String guarantee_amount);
 }

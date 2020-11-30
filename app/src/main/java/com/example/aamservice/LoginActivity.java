@@ -61,8 +61,6 @@ public class LoginActivity extends AppCompatActivity {
 
     SharedPreferences sharedPreferences;
 
-    JSONParser jsonParser = new JSONParser();
-
     String str;
 
     ApiInterface mService;
@@ -76,11 +74,22 @@ public class LoginActivity extends AppCompatActivity {
         mService = Constants.GetAPI();
         sharedPreferences=getSharedPreferences("PREF",MODE_PRIVATE);
 
+        progressDialog=new ProgressDialog(LoginActivity.this);
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage("Please Wait...");
+
+
         login_register_btn = findViewById(R.id.login_register_btn);
         login_login_btn = findViewById(R.id.login_login_btn);
         txt_username = findViewById(R.id.login_username);
         txt_pass = findViewById(R.id.login_password);
 
+
+        if (!TextUtils.isEmpty(sharedPreferences.getString("id","")) && !TextUtils.isEmpty(sharedPreferences.getString("contact","")) && !TextUtils.isEmpty(sharedPreferences.getString("purpose",""))){
+
+            startActivity(new Intent(LoginActivity.this, HomeActivity.class));
+            finish();
+        }
         login_login_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -88,103 +97,154 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.makeText(LoginActivity.this, "Enter Username", Toast.LENGTH_SHORT).show();
                 } else if (TextUtils.isEmpty(txt_pass.getText().toString())) {
                     Toast.makeText(LoginActivity.this, "Enter Password", Toast.LENGTH_SHORT).show();
-                }  else {
+                } else {
 
-                   if (txt_username.getText().toString().substring(0,3).equals("92")){
+                    if (Constants.isNetworkAvailable(LoginActivity.this)) {
 
-                    //   new AttemptSignInWithContact().execute();
+                        if (txt_username.getText().toString().substring(0, 2).equals("92")) {
 
-                       mService.SignInWithContactPass(txt_username.getText().toString(),txt_pass.getText().toString()).enqueue(new Callback<ResponseBody>() {
-                           @Override
-                           public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                               if (response.isSuccessful()){
+                            //   new AttemptSignInWithContact().execute();
+                            progressDialog.show();
+                            mService.SignInWithContactPass(txt_username.getText().toString(), txt_pass.getText().toString()).enqueue(new Callback<ResponseBody>() {
+                                @Override
+                                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                                    if (response.isSuccessful()) {
 
-                                   str = "";
-                                   try {
-                                       str = ((ResponseBody) response.body()).string();
-                                       JSONObject jSONObject = new JSONObject(str);
-
-
-                                   } catch (IOException e) {
-                                       e.printStackTrace();
-                                   } catch (JSONException e) {
-                                       e.printStackTrace();
-                                   }
-                               }else{
-                                   try {
-                                       Toast.makeText(LoginActivity.this, ""+response.errorBody().string(), Toast.LENGTH_SHORT).show();
-                                   } catch (IOException e) {
-                                       e.printStackTrace();
-                                   }
-                               }
-                           }
-
-                           @Override
-                           public void onFailure(Call<ResponseBody> call, Throwable t) {
-
-                           }
-                       });
-                   }else{
-
-                      // new AttemptSignInWithEmail().execute();
-
-                       mService.SignInWithEmailPass(txt_username.getText().toString(),txt_pass.getText().toString())
-                               .enqueue(new Callback<ResponseBody>() {
-                                   @Override
-                                   public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                                       if (response.isSuccessful()){
-
-                                           str = "";
-                                           try {
-                                               str = ((ResponseBody) response.body()).string();
-                                               JSONObject jSONObject = new JSONObject(str);
-
-                                               SharedPreferences.Editor editor=getSharedPreferences("PREF",MODE_PRIVATE).edit();
-                                               editor.putString("id",jSONObject.getString("id"));
-                                               editor.putString("fname",jSONObject.getString("fname"));
-                                               editor.putString("lname",jSONObject.getString("lname"));
-                                               editor.putString("email",jSONObject.getString("email"));
-                                               editor.putString("contact",jSONObject.getString("contact"));
-                                               editor.putString("address",jSONObject.getString("address"));
-                                               editor.putString("city",jSONObject.getString("city"));
-                                               editor.putString("age",jSONObject.getString("age"));
-                                               editor.putString("gender",jSONObject.getString("gender"));
-                                               editor.putString("purpose",jSONObject.getString("purpose"));
-                                               editor.commit();
-
-                                               startActivity(new Intent(LoginActivity.this, HomeActivity.class));
-                                               finish();
+                                        progressDialog.dismiss();
+                                        str = "";
+                                        try {
+                                            str = ((ResponseBody) response.body()).string();
+                                            JSONObject jSONObject = new JSONObject(str);
 
 
-                                           } catch (IOException e) {
-                                               e.printStackTrace();
-                                           } catch (JSONException e) {
-                                               e.printStackTrace();
-                                           }
-                                       }else{
-                                           try {
-                                               Toast.makeText(LoginActivity.this, ""+response.errorBody().string(), Toast.LENGTH_SHORT).show();
-                                           } catch (IOException e) {
-                                               e.printStackTrace();
-                                           }
-                                       }
-                                   }
+                                            if (jSONObject.getString("status").equals("Successful")){
 
-                                   @Override
-                                   public void onFailure(Call<ResponseBody> call, Throwable t) {
+                                                SharedPreferences.Editor editor = getSharedPreferences("PREF", MODE_PRIVATE).edit();
+                                                editor.putString("id", jSONObject.getString("id"));
+                                                editor.putString("fname", jSONObject.getString("fname"));
+                                                editor.putString("lname", jSONObject.getString("lname"));
+                                                editor.putString("email", jSONObject.getString("email"));
+                                                editor.putString("contact", jSONObject.getString("contact"));
+                                                editor.putString("address", jSONObject.getString("address"));
+                                                editor.putString("city", jSONObject.getString("city"));
+                                                editor.putString("age", jSONObject.getString("age"));
+                                                editor.putString("gender", jSONObject.getString("gender"));
+                                                editor.putString("purpose", jSONObject.getString("purpose"));
+                                                editor.commit();
 
-                                   }
-                               });
-                   }
+                                                startActivity(new Intent(LoginActivity.this, HomeActivity.class));
+                                                finish();
 
+                                                Toast.makeText(LoginActivity.this, ""+jSONObject.getString("message"), Toast.LENGTH_SHORT).show();
+
+                                            }else{
+
+                                                Toast.makeText(LoginActivity.this, ""+jSONObject.getString("message"), Toast.LENGTH_SHORT).show();
+
+                                            }
+
+
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    } else {
+                                        progressDialog.dismiss();
+                                        try {
+                                            Toast.makeText(LoginActivity.this, "" + response.errorBody().string(), Toast.LENGTH_SHORT).show();
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                                    Toast.makeText(LoginActivity.this, "" + t.getMessage(), Toast.LENGTH_SHORT).show();
+
+                                    progressDialog.dismiss();
+                                }
+                            });
+                        } else {
+
+
+                            progressDialog.show();
+                            mService.SignInWithEmailPass(txt_username.getText().toString(), txt_pass.getText().toString())
+                                    .enqueue(new Callback<ResponseBody>() {
+                                        @Override
+                                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                                            if (response.isSuccessful()) {
+
+                                                progressDialog.dismiss();
+                                                str = "";
+                                                try {
+                                                    str = ((ResponseBody) response.body()).string();
+                                                    JSONObject jSONObject = new JSONObject(str);
+
+                                                    if (jSONObject.getString("status").equals("Successful")) {
+                                                        SharedPreferences.Editor editor = getSharedPreferences("PREF", MODE_PRIVATE).edit();
+                                                        editor.putString("id", jSONObject.getString("id"));
+                                                        editor.putString("fname", jSONObject.getString("fname"));
+                                                        editor.putString("lname", jSONObject.getString("lname"));
+                                                        editor.putString("email", jSONObject.getString("email"));
+                                                        editor.putString("contact", jSONObject.getString("contact"));
+                                                        editor.putString("address", jSONObject.getString("address"));
+                                                        editor.putString("city", jSONObject.getString("city"));
+                                                        editor.putString("age", jSONObject.getString("age"));
+                                                        editor.putString("gender", jSONObject.getString("gender"));
+                                                        editor.putString("purpose", jSONObject.getString("purpose"));
+                                                        editor.commit();
+
+                                                        startActivity(new Intent(LoginActivity.this, HomeActivity.class));
+                                                        finish();
+                                                        Toast.makeText(LoginActivity.this, "" + jSONObject.getString("message"), Toast.LENGTH_SHORT).show();
+                                                    }else{
+
+                                                        Toast.makeText(LoginActivity.this, "" + jSONObject.getString("message"), Toast.LENGTH_SHORT).show();
+
+                                                    }
+                                                } catch (IOException e) {
+                                                    e.printStackTrace();
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
+                                                }
+                                            } else {
+                                                progressDialog.dismiss();
+                                                str = "";
+                                                try {
+                                                    str = ((ResponseBody) response.errorBody()).string();
+                                                    JSONObject jSONObject = new JSONObject(str);
+                                                    Toast.makeText(LoginActivity.this, "" + jSONObject.getString("status"), Toast.LENGTH_SHORT).show();
+                                                } catch (IOException e) {
+                                                    e.printStackTrace();
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
+                                                }
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                                            progressDialog.dismiss();
+                                            Toast.makeText(LoginActivity.this, ""+t.getMessage(), Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                        }
+
+                    }else{
+                        Toast.makeText(LoginActivity.this, "No Internet Connection", Toast.LENGTH_SHORT).show();
+                    }
                 }
+
             }
         });
         login_register_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                Intent intent = new Intent(LoginActivity.this, LoginActivity.class);
+                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
                 startActivity(intent);
             }
         });
@@ -250,100 +310,7 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    class AttemptSignInWithContact extends AsyncTask<String, String, String> {
-
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        protected String doInBackground(String... args) {
-
-            List<NameValuePair> params = new ArrayList<NameValuePair>();
-
-            params.add(new BasicNameValuePair("contact", txt_username.getText().toString()));
-            params.add(new BasicNameValuePair("password", txt_pass.getText().toString()));
 
 
-            JSONObject json = jsonParser.makeHttpRequest(HttpURL, "GET", params);
-            // checking log for json response
-            Log.d("Login attempt", json.toString());
 
-            try {
-                String status = json.getString(TAG_STATUS);
-
-                if (status.equals("Successful")) {
-
-
-                    Toast.makeText(LoginActivity.this, "" + status, Toast.LENGTH_SHORT).show();
-                    return json.getString(TAG_MESSAGE);
-
-                } else {
-
-
-                    return json.getString(TAG_MESSAGE);
-                }
-            } catch (JSONException e) {
-                Toast.makeText(LoginActivity.this, "exception" + e, Toast.LENGTH_LONG).show();
-            }
-
-
-            return null;
-        }
-
-        protected void onPostExecute(String message1) {
-            super.onPostExecute(message1);
-            if (message1 != null) {
-                Toast.makeText(LoginActivity.this, message1, Toast.LENGTH_LONG).show();
-            }
-        }
-
-    }
-    class AttemptSignInWithEmail extends AsyncTask<String, String, String> {
-
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        protected String doInBackground(String... args) {
-
-            List<NameValuePair> params = new ArrayList<NameValuePair>();
-
-            params.add(new BasicNameValuePair("email", txt_username.getText().toString()));
-            params.add(new BasicNameValuePair("password", txt_pass.getText().toString()));
-
-
-            JSONObject json = jsonParser.makeHttpRequest(HttpURL, "GET", params);
-            // checking log for json response
-            Log.d("Login attempt", json.toString());
-
-            try {
-                String status = json.getString(TAG_STATUS);
-
-                if (status.equals("Successful")) {
-
-
-                    Toast.makeText(LoginActivity.this, "" + status, Toast.LENGTH_SHORT).show();
-                    return json.getString(TAG_MESSAGE);
-
-                } else {
-
-
-                    return json.getString(TAG_MESSAGE);
-                }
-            } catch (JSONException e) {
-                Toast.makeText(LoginActivity.this, "exception" + e, Toast.LENGTH_LONG).show();
-            }
-
-
-            return null;
-        }
-
-        protected void onPostExecute(String message1) {
-            super.onPostExecute(message1);
-            if (message1 != null) {
-                Toast.makeText(LoginActivity.this, message1, Toast.LENGTH_LONG).show();
-            }
-        }
-
-    }
 }
