@@ -116,7 +116,6 @@ public class PolicyFragment extends Fragment {
 
                                             setFragment(new PostsFragment());
 
-
                                         }
                                     } catch (IOException e) {
                                         e.printStackTrace();

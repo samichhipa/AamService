@@ -41,6 +41,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.bumptech.glide.Glide;
 import com.example.aamservice.HomeActivity;
 import com.example.aamservice.R;
 import com.example.aamservice.Retrofit.ApiInterface;
@@ -245,14 +246,17 @@ public class UploadPostFragment extends Fragment {
                                             Toast.makeText(getActivity(), ""+jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
 
 
+                                            PolicyFragment policyFragment=new PolicyFragment();
                                             Bundle bundle = new Bundle();
                                             bundle.putString("post_id", jsonObject.getString("post_id"));
                                             bundle.putString("ad_name", add_post_title.getText().toString());
                                             bundle.putString("ad_amount", add_post_amount.getText().toString());
                                             bundle.putString("duration", start_date + " - " + end_date);
                                             bundle.putString("location", add_post_location.getText().toString());
-                                            setArguments(bundle);
-                                            setFragment(new PolicyFragment());
+                                            policyFragment.setArguments(bundle);
+
+                                            getFragmentManager().beginTransaction().replace(R.id.main_fragment, policyFragment).commit();
+                                            //setFragment(new PolicyFragment(),bundle);
 
                                         }else{
 
@@ -305,14 +309,7 @@ public class UploadPostFragment extends Fragment {
         return root;
     }
 
-    public void setFragment(Fragment fragment) {
 
-
-        FragmentTransaction fragmentTransaction = getActivity().getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.main_fragment, fragment);
-        fragmentTransaction.commit();
-
-    }
 
     private String imagetostr(Bitmap bitmap) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -455,17 +452,18 @@ public class UploadPostFragment extends Fragment {
 
 
         if (requestCode == 203) {
-            CropImage.ActivityResult result = CropImage.getActivityResult(data);
-            if (resultCode == -1) {
-                image_uri = result.getUri();
+            if (resultCode == RESULT_OK) {
+                CropImage.ActivityResult result = CropImage.getActivityResult(data);
 
+                image_uri = result.getUri();
+                Glide.with(getContext()).load(result.getUri()).into(add_post_image);
 // by this point we have the camera photo on disk
                 bitmap = BitmapFactory.decodeFile(image_uri.getPath());
                 //add_post_image.setImageBitmap(bitmap);
-                Picasso.get().load(image_uri).into(add_post_image);
-                //Glide.with(getContext()).load(this.imageUri).into(this.item_image);
-            } else if (resultCode == 204) {
-                Toast.makeText(getContext(), result.getError().getMessage(), Toast.LENGTH_SHORT).show();
+
+
+            } else{
+                Toast.makeText(getActivity(), "Closed", Toast.LENGTH_SHORT).show();
             }
         }
 

@@ -67,7 +67,7 @@ public class TenantInvoiceActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
 
-            post_id= extras.getString("post_idd");
+            post_id= getIntent().getExtras().getString("post_idd");
         }
 
 
@@ -112,9 +112,11 @@ if (Constants.isNetworkAvailable(TenantInvoiceActivity.this)) {
                         txt_usage_time.setText(jsonObject.getString("usage_time"));
                         txt_contact.setText(jsonObject.getString("contact"));
 
+                        Toast.makeText(TenantInvoiceActivity.this, "" + jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
+
                     } else {
 
-                        Toast.makeText(TenantInvoiceActivity.this, "" + jsonObject.getString("status"), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(TenantInvoiceActivity.this, "" + jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -231,6 +233,8 @@ if (Constants.isNetworkAvailable(TenantInvoiceActivity.this)) {
             addNewItemWithLeftAndRight(document, "Contact", txt_contact.getText().toString(), leftFont, rightFont);
 
             document.close();
+
+
 
 
         } catch (DocumentException de) {

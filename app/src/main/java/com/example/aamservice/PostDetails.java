@@ -122,12 +122,14 @@ public class PostDetails extends AppCompatActivity {
                                                                 progressDialog.dismiss();
                                                                 Toast.makeText(PostDetails.this, "" + object.getString("status"), Toast.LENGTH_SHORT).show();
 
-                                                                Intent intent = new Intent(PostDetails.this, ShowPolicyActivity.class);
+                                                                Intent intent = new Intent(PostDetails.this, TenantInvoiceActivity.class);
                                                                 intent.putExtra("post_idd", post_id);
                                                                 startActivity(intent);
 
 
                                                             } else {
+
+                                                                Toast.makeText(PostDetails.this, "" + object.getString("status"), Toast.LENGTH_SHORT).show();
 
                                                             }
 
@@ -246,8 +248,7 @@ public class PostDetails extends AppCompatActivity {
 
         try {
 
-
-            Picasso.get().load(Constants.URL+"/uploads/"+object.getString("imagepath")).into(mPostDetailImg);
+            Glide.with(PostDetails.this).load(Constants.URL+"/uploads/"+object.getString("imagepath")).into(mPostDetailImg);
             mPostDetailTitle.setText(object.getString("title"));
             mPostDetailAmount.setText(object.getString("amount"));
             mPostDetailDescription.setText(object.getString("description"));

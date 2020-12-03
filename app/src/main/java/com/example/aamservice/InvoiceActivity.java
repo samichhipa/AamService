@@ -213,8 +213,7 @@ public class InvoiceActivity extends AppCompatActivity {
         } catch (IOException e) {
             //Log.e("PDFCreator", "ioException:" + e);
         }
-        Toast.makeText(this, ""+filepath+".pdf is saved to"+path, Toast.LENGTH_SHORT).show();
-
+        Toast.makeText(this, ""+filepath+" is Saved to"+path, Toast.LENGTH_SHORT).show();
 
     }
 

@@ -270,6 +270,8 @@
                 android:gravity="center"
                 android:orientation="horizontal">
             <CheckBox
+
+                android:buttonTint="@color/brown"
                 android:drawableTint="@color/brown"
                 android:backgroundTint="@color/brown"
                 android:textColorLink="@color/brown"
