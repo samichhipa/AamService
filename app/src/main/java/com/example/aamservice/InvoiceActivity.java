@@ -161,9 +161,7 @@ public class InvoiceActivity extends AppCompatActivity {
 
 
         try {
-
-
-
+            
             FileOutputStream fOut = new FileOutputStream(filepath);
 
             PdfWriter.getInstance(document, fOut);

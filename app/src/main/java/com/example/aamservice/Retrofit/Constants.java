@@ -12,7 +12,7 @@ import java.io.File;
 
 public class Constants {
 
-    public static final String URL = "http://192.168.3.111:8080/AamService/";
+    public static final String URL = "https://www.khalidwaliqureshi.com/new/aam_admin_api/";
 
     public static String[] category = {"Real Estate", "Electronic Appliances", "Garments & Fabrics", "Vehicle", "Hardware & Sanitory", "Household Utility", "Operator Services"};
 
